@@ -58,7 +58,7 @@ class RadialPercentWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Center(
             child: Text(
-              percent.toString(),
+              '${percent.toInt().toString()} %',
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -118,9 +118,10 @@ class MyPainter extends CustomPainter {
 
   Rect getArcRect(Size size) {
     final lineMargin = 3;
-    final offset = lineWidth / 2 + 3;
+    final lineOffset = 2;
+    final offset = lineWidth / lineOffset + lineMargin;
     final arcRect = Offset(offset, offset) &
-        Size(size.width - offset * 2, size.height - offset * 2);
+        Size(size.width - offset * lineOffset, size.height - offset * lineOffset);
     return arcRect;
   }
 

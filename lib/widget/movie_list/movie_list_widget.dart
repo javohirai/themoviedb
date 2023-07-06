@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:themoviedb/utils/images.dart';
 
 class Movie {
   int id;

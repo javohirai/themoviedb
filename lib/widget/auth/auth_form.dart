@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:themoviedb/style.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -90,7 +89,6 @@ class __FormWidgetState extends State<_FormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final textStye = const TextStyle(fontSize: 16);
     final defaultColor = const Color(0xFF01B4E4);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
