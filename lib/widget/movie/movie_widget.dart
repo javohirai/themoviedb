@@ -4,6 +4,8 @@ import 'package:themoviedb/utils/images.dart';
 import 'package:themoviedb/widget/movie_list/movie_list_widget.dart';
 import 'package:themoviedb/widget/movie/movie_name_info.dart';
 
+import 'movie_screen_cast.dart';
+
 class MovieWidget extends StatefulWidget {
   Movie movie;
   MovieWidget({super.key, required this.movie});
@@ -30,6 +32,7 @@ class _MovieWidgetState extends State<MovieWidget> {
             MovieNameWidget(
               movie: movie,
             ),
+            MovieScreenCastWidget(),
           ],
         ),
       ),
