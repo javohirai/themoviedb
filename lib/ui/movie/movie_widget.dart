@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/style.dart';
-import 'package:themoviedb/utils/images.dart';
-import 'package:themoviedb/widget/movie_list/movie_list_widget.dart';
-import 'package:themoviedb/widget/movie/movie_name_info.dart';
+import 'package:themoviedb/resources/images.dart';
+import 'package:themoviedb/ui/movie_list/movie_list_widget.dart';
+import 'package:themoviedb/ui/movie/movie_name_info.dart';
 
 import 'movie_screen_cast.dart';
 

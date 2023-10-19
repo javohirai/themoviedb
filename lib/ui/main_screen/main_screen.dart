@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/widget/custom_widgets/custom_figure.dart';
-import 'package:themoviedb/widget/movie_list/movie_list_widget.dart';
+import 'package:themoviedb/ui/custom_widgets/custom_figure.dart';
+import 'package:themoviedb/ui/movie_list/movie_list_widget.dart';
 
 class MainScreenWidget extends StatefulWidget {
   MainScreenWidget({super.key});

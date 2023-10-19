@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/widget/custom_widgets/custom_figure.dart';
+import 'package:themoviedb/ui/custom_widgets/custom_figure.dart';
 
 import '../movie_list/movie_list_widget.dart';
 
