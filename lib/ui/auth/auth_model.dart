@@ -1,16 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:themoviedb/domain/api_client/api_client.dart';
+import 'package:themoviedb/resources/pwd.dart';
 
 class AuthModel extends ChangeNotifier {
+  final _apiClient = ApiClient();
   String? _errorText;
-  final loginController = TextEditingController();
-  final passwordController = TextEditingController();
+  final loginController = TextEditingController(text: UtilPwd.login);
+  final passwordController = TextEditingController(text: UtilPwd.pwd);
 
   String get errorText => _errorText ?? '';
-  final bool _isAuthProgress = false;
+  bool _isAuthProgress = false;
 
-  bool get canAuth => _isAuthProgress;
+  bool get canAuth => !_isAuthProgress;
+  bool get isAuthProgress => _isAuthProgress;
 
-  Future<void> auth(BuildContext context) async {}
+  Future<void> auth(BuildContext context) async {
+    final login = loginController.text;
+    final pwd = passwordController.text;
+
+    if (login.isEmpty || pwd.isEmpty) {
+      _errorText = 'Login or password is empty';
+      notifyListeners();
+      return;
+    }
+    _errorText = null;
+    _isAuthProgress = true;
+    notifyListeners();
+    String? sessionId;
+    try {
+      sessionId = await _apiClient.auth(login, pwd);
+    } catch (e) {
+      _errorText = e.toString();
+    }
+    _isAuthProgress = false;
+    if (_errorText != null && sessionId == null) notifyListeners();
+  }
 }
 
 class AuthProvider extends InheritedNotifier {

@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:themoviedb/ui/auth/auth_model.dart';
 
-class AppWidget extends StatefulWidget {
+class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
 
-  @override
-  State<AppWidget> createState() => _AppWidgetState();
-}
-
-class _AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +19,7 @@ class _AppWidgetState extends State<AppWidget> {
 }
 
 class _Header extends StatelessWidget {
-  _Header({super.key});
+  const _Header({super.key});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,6 +47,7 @@ class _Header extends StatelessWidget {
 final defaultFontStyle = const TextStyle(fontSize: 16, color: Colors.black);
 
 class _FormWidget extends StatelessWidget {
+  const _FormWidget();
   @override
   Widget build(BuildContext context) {
     final model = AuthProvider.read(context)?.model;
@@ -66,7 +62,6 @@ class _FormWidget extends StatelessWidget {
         ),
         SizedBox(height: 20),
         TextField(
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           controller: model?.passwordController,
           obscureText: true,
           decoration: inputDecorationForTextField('Password'),
@@ -74,7 +69,7 @@ class _FormWidget extends StatelessWidget {
         SizedBox(height: 20),
         Row(
           children: [
-            _LoginButtonWidget(color: defaultColor),
+            const _LoginButtonWidget(),
             SizedBox(width: 30),
             TextButton(
               onPressed: () {},
@@ -99,22 +94,21 @@ class _FormWidget extends StatelessWidget {
 }
 
 class _LoginButtonWidget extends StatelessWidget {
+  final defaultColor = const Color(0xFF01B4E4);
   const _LoginButtonWidget({
     super.key,
-    required this.color,
   });
-
-  final Color color;
-
   @override
   Widget build(BuildContext context) {
     final model = AuthProvider.watch(context)?.model;
-    final onPressed = model?.canAuth == true ? model?.auth(context) : null;
+    final onPressed =
+        model?.canAuth == true ? () => model?.auth(context) : null;
     return TextButton(
-      onPressed: () => onPressed,
+      onPressed: onPressed,
       style: ButtonStyle(
-        backgroundColor: MaterialStatePropertyAll(color),
-        foregroundColor: MaterialStatePropertyAll(Colors.white),
+        backgroundColor: MaterialStatePropertyAll(
+            model?.isAuthProgress == true ? Colors.white : defaultColor),
+        foregroundColor: MaterialStatePropertyAll(model?.isAuthProgress == true ? Colors.grey : Colors.white),
         textStyle: MaterialStatePropertyAll(
           TextStyle(fontWeight: FontWeight.w700),
         ),
