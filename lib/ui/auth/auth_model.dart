@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
+import 'package:themoviedb/domain/entity/security_session.dart';
 import 'package:themoviedb/resources/pwd.dart';
 
 class AuthModel extends ChangeNotifier {
+  final _sessionStorage = SessionStorage();
   final _apiClient = ApiClient();
   String? _errorText;
   final loginController = TextEditingController(text: UtilPwd.login);
@@ -33,7 +35,13 @@ class AuthModel extends ChangeNotifier {
       _errorText = e.toString();
     }
     _isAuthProgress = false;
-    if (_errorText != null && sessionId == null) notifyListeners();
+    if (_errorText != null) notifyListeners();
+    if (sessionId == null) {
+      notifyListeners();
+      return;
+    }
+    await _sessionStorage.setSessionId(sessionId);
+    Navigator.of(context).pushReplacementNamed('/main');
   }
 }
 
