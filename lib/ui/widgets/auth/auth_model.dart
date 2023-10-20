@@ -37,8 +37,17 @@ class AuthModel extends ChangeNotifier {
         login,
         password,
       );
+    } on ApiClientException catch (e) {
+      switch (e.type) {
+        case ApiClientExceptionType.Network:
+          _errorMessage = 'Сервер не доступен!';
+        case ApiClientExceptionType.Auth:
+          _errorMessage = 'Неверный логин или пароль!';
+        case ApiClientExceptionType.Other:
+          _errorMessage = 'Произошла ошибка попробуйте еще раз';
+      }
     } catch (e) {
-      _errorMessage = 'Неправильный логин пароль!';
+      _errorMessage = 'Произошла ошибка попробуйте еще раз';
     }
     _isAuthProgress = false;
     if (_errorMessage != null) {

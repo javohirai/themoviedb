@@ -1,6 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+enum ApiClientExceptionType { Network, Auth, Other }
+
+class ApiClientException implements Exception {
+  final ApiClientExceptionType type;
+
+  ApiClientException(this.type);
+}
+
 class ApiClient {
   final _client = HttpClient();
 
@@ -30,22 +38,33 @@ class ApiClient {
     if (queryParametres != null) {
       url = url.replace(queryParameters: queryParametres);
     }
-    final request = method == 'get'
-        ? await _client.getUrl(url)
-        : await _client.postUrl(url);
+    try {
+      final request = method == 'get'
+          ? await _client.getUrl(url)
+          : await _client.postUrl(url);
 
-    request.headers.add('Authorization', 'Bearer $_token');
-    if (bodyParametres != null) {
-      request.headers.contentType = ContentType.json;
-      request.write(jsonEncode(bodyParametres));
+      request.headers.add('Authorization', 'Bearer $_token');
+      if (bodyParametres != null) {
+        request.headers.contentType = ContentType.json;
+        request.write(jsonEncode(bodyParametres));
+      }
+      final response = await request.close();
+      if (response.statusCode == 401) {
+        throw ApiClientException(ApiClientExceptionType.Auth);
+      }
+      final json = await response
+          .transform(utf8.decoder)
+          .toList()
+          .then((value) => value.join())
+          .then((value) => jsonDecode(value) as Map<String, dynamic>);
+      return json;
+    } on SocketException {
+      throw ApiClientException(ApiClientExceptionType.Network);
+    } on ApiClientException {
+      rethrow;
+    } catch (e) {
+      throw ApiClientException(ApiClientExceptionType.Other);
     }
-    final response = await request.close();
-    final json = await response
-        .transform(utf8.decoder)
-        .toList()
-        .then((value) => value.join())
-        .then((value) => jsonDecode(value) as Map<String, dynamic>);
-    return json;
   }
 
   Future<String> _makeToken() async {
