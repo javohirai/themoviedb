@@ -15,9 +15,11 @@ class ApiClient {
   final _client = HttpClient();
 
   final _host = 'https://api.themoviedb.org/3';
-  final _imageHost = 'https://image.tmdb.org/t/p/w500';
+  static final String _imageHost = 'https://image.tmdb.org/t/p/w500';
   final _token =
       'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxN2FiYmNmMTQzMGRjNTcyMTgyYjJhNjU4MTQ2MTg4ZCIsInN1YiI6IjYwOWQxMTAzZmQ0YTk2MDA2MzRlNmIzNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ErSFBc1fO_s_MJoDdjQg3RDi3jh41Ls1WYPzr36OB6Y';
+
+  static String imagePath(String path) => '$_imageHost$path';
 
   Future<String> auth(
     String username,
@@ -80,7 +82,7 @@ class ApiClient {
       '/movie/popular',
       'get',
       null,
-      <String, dynamic>{'language': locale, 'page': page},
+      <String, dynamic>{'language': locale, 'page': page.toString()},
     ); //?language=en-US&page=1
     return PopularMovieResponse.fromJson(json);
   }
