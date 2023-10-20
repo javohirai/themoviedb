@@ -87,6 +87,22 @@ class ApiClient {
     return PopularMovieResponse.fromJson(json);
   }
 
+  Future<PopularMovieResponse> searchMovie(
+      int page, String locale, String query) async {
+    final json = await _makeUri(
+      '/search/movie',
+      'get',
+      null,
+      <String, dynamic>{
+        'language': locale,
+        'page': page.toString(),
+        'query': query,
+        'include_adult': true.toString(),
+      },
+    ); //?language=en-US&page=1
+    return PopularMovieResponse.fromJson(json);
+  }
+
   Future<String> _validateLogin(
     String username,
     String password,
