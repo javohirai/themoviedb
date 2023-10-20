@@ -10,6 +10,9 @@ class MovieListModel extends ChangeNotifier {
 
   List<Movie> get movies => _movies;
   late DateFormat _dateFormat;
+  late int _currentPage;
+  late int _totalPage;
+  bool _isLoadingMovies = false;
   String _locale = '';
 
   String stringFromDate(DateTime? date) =>
@@ -20,14 +23,24 @@ class MovieListModel extends ChangeNotifier {
     if (_locale == locale) return;
     _locale = locale;
     _dateFormat = DateFormat.yMMMMd(locale);
+    _currentPage = 0;
+    _totalPage = 1;
     _movies.clear();
     _loadMovies();
   }
 
   Future<void> _loadMovies() async {
-    final response = await _apiClient.popularMovieList(1, _locale);
-    _movies.addAll(response.movieList);
-    notifyListeners();
+    if (_isLoadingMovies || _currentPage >= _totalPage) return;
+    _isLoadingMovies = true;
+    try {
+      final nextPage = _currentPage + 1;
+      final response = await _apiClient.popularMovieList(nextPage, _locale);
+      _currentPage = response.page;
+      _totalPage = response.total_pages;
+      _movies.addAll(response.movieList);
+      notifyListeners();
+    } catch (e) {}
+    _isLoadingMovies = false;
   }
 
   void onMovieTap(BuildContext context, int index) {
@@ -36,5 +49,10 @@ class MovieListModel extends ChangeNotifier {
       MainNavigationRouteNames.movieDetailsRoute,
       arguments: id,
     );
+  }
+
+  void showedMovieAtIndex(int index) {
+    if (index < _movies.length - 1) return;
+    _loadMovies();
   }
 }
