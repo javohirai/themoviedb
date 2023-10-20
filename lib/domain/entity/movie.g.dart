@@ -15,7 +15,7 @@ Movie _$MovieFromJson(Map<String, dynamic> json) => Movie(
       originalLanguage: json['original_language'] as String,
       originalTitle: json['original_title'] as String,
       overview: json['overview'] as String,
-      releaseDate: Movie._parseDateFromString(json['release_date'] as String?),
+      releaseDate: parseDateFromString(json['release_date'] as String?),
       popularity: (json['popularity'] as num).toDouble(),
       posterPath: json['poster_path'] as String,
       title: json['title'] as String,

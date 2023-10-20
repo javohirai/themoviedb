@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:themoviedb/domain/entity/movie_data_provicer.dart';
 
 part 'movie.g.dart';
 
@@ -13,7 +14,7 @@ class Movie {
   String overview;
   double popularity;
   String posterPath;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseDateFromString)
   DateTime? releaseDate;
   String title;
   bool video;
@@ -41,8 +42,5 @@ class Movie {
 
   Map<String, dynamic> toJson() => _$MovieToJson(this);
 
-  static DateTime? _parseDateFromString(String? date) {
-    if (date == null || date.isEmpty) return null;
-    return DateTime.tryParse(date);
-  }
+  
 }
