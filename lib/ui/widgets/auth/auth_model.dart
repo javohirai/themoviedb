@@ -3,6 +3,7 @@ import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:themoviedb/resources/pwd.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
@@ -51,14 +52,15 @@ class AuthModel extends ChangeNotifier {
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
-    unawaited(Navigator.of(context).pushNamed('/main_screen'));
+    unawaited(Navigator.of(context)
+        .pushReplacementNamed(MainNavigationRouteNames.mainScreenRoute));
   }
 }
 
-class AuthProvider extends InheritedNotifier {
-  final AuthModel model;
+class NotifierProvider<Model extends ChangeNotifier> extends InheritedNotifier {
+  final Model model;
 
-  const AuthProvider({
+  const NotifierProvider({
     Key? key,
     required this.model,
     required Widget child,
@@ -68,13 +70,16 @@ class AuthProvider extends InheritedNotifier {
           child: child,
         );
 
-  static AuthProvider? watch(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AuthProvider>();
+  static Model? watch<Model extends ChangeNotifier>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<NotifierProvider<Model>>()
+        ?.model;
   }
 
-  static AuthProvider? read(BuildContext context) {
-    final widget =
-        context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
-    return widget is AuthProvider ? widget : null;
+  static Model? read<Model extends ChangeNotifier>(BuildContext context) {
+    final widget = context
+        .getElementForInheritedWidgetOfExactType<NotifierProvider<Model>>()
+        ?.widget;
+    return widget is NotifierProvider<Model> ? widget.model : null;
   }
 }
