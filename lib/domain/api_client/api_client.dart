@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:themoviedb/domain/entity/popular_movie_response.dart';
+
 enum ApiClientExceptionType { Network, Auth, Other }
 
 class ApiClientException implements Exception {
@@ -71,6 +73,16 @@ class ApiClient {
     final json = await _makeUri('/authentication/token/new', 'get');
     final token = json['request_token'] as String;
     return token;
+  }
+
+  Future<PopularMovieResponse> popularMovieList(int page, String locale) async {
+    final json = await _makeUri(
+      '/movie/popular',
+      'get',
+      null,
+      <String, dynamic>{'language': locale, 'page': page},
+    ); //?language=en-US&page=1
+    return PopularMovieResponse.fromJson(json);
   }
 
   Future<String> _validateLogin(
