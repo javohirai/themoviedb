@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:themoviedb/domain/entity/movie.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'popular_movie_response.g.dart';
 
@@ -7,15 +7,15 @@ part 'popular_movie_response.g.dart';
 class PopularMovieResponse {
   final int page;
   @JsonKey(name: 'results')
-  final List<Movie> movieList;
-  final int total_pages;
-  final int total_results;
+  final List<Movie> movies;
+  final int totalResults;
+  final int totalPages;
 
   PopularMovieResponse({
     required this.page,
-    required this.movieList,
-    required this.total_pages,
-    required this.total_results,
+    required this.movies,
+    required this.totalResults,
+    required this.totalPages,
   });
 
   factory PopularMovieResponse.fromJson(Map<String, dynamic> json) =>

@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
-import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
 import 'package:themoviedb/ui/widgets/movie_list/movie_list_model.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MovieListWidget extends StatelessWidget {
   const MovieListWidget({Key? key}) : super(key: key);
@@ -9,7 +10,7 @@ class MovieListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.watch<MovieListModel>(context);
-    if (model == null) return SizedBox.shrink();
+    if (model == null) return const SizedBox.shrink();
     return Stack(
       children: [
         ListView.builder(
@@ -20,6 +21,7 @@ class MovieListWidget extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             model.showedMovieAtIndex(index);
             final movie = model.movies[index];
+            final posterPath = movie.posterPath;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Stack(
@@ -40,7 +42,10 @@ class MovieListWidget extends StatelessWidget {
                     clipBehavior: Clip.hardEdge,
                     child: Row(
                       children: [
-                        Image.network(ApiClient.imagePath(movie.posterPath)),
+                        posterPath != null
+                            ? Image.network(ApiClient.imageUrl(posterPath),
+                                width: 95)
+                            : const SizedBox.shrink(),
                         const SizedBox(width: 15),
                         Expanded(
                           child: Column(
@@ -89,7 +94,7 @@ class MovieListWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
-            onChanged: model.searchQuery,
+            onChanged: model.serachMovie,
             decoration: InputDecoration(
               labelText: 'Поиск',
               filled: true,
