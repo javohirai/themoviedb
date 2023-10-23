@@ -8,7 +8,7 @@ part of 'movie_details.dart';
 
 MovieDetails _$MovieDetailsFromJson(Map<String, dynamic> json) => MovieDetails(
       adult: json['adult'] as bool,
-      backdropPath: json['backdrop_path'] as String,
+      backdropPath: json['backdrop_path'] as String?,
       belongsToCollection: json['belongs_to_collection'] as String,
       budget: json['budget'] as int,
       genres: (json['genres'] as List<dynamic>)
@@ -21,7 +21,7 @@ MovieDetails _$MovieDetailsFromJson(Map<String, dynamic> json) => MovieDetails(
       originalTitle: json['original_title'] as String,
       overview: json['overview'] as String,
       popularity: (json['popularity'] as num).toDouble(),
-      posterPath: json['poster_path'] as String,
+      posterPath: json['poster_path'] as String?,
       productionCompanies: (json['production_companies'] as List<dynamic>)
           .map((e) => ProductionCompany.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -87,7 +87,7 @@ Map<String, dynamic> _$GenreToJson(Genre instance) => <String, dynamic>{
 ProductionCompany _$ProductionCompanyFromJson(Map<String, dynamic> json) =>
     ProductionCompany(
       id: json['id'] as int,
-      logoPath: json['logo_path'] as String,
+      logoPath: json['logo_path'] as String?,
       name: json['name'] as String,
       originCountry: json['origin_country'] as String,
     );

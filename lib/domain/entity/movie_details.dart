@@ -6,7 +6,7 @@ part 'movie_details.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class MovieDetails {
   bool adult;
-  String backdropPath;
+  String? backdropPath;
   String belongsToCollection;
   int budget;
   List<Genre> genres;
@@ -17,7 +17,7 @@ class MovieDetails {
   String originalTitle;
   String overview;
   double popularity;
-  String posterPath;
+  String? posterPath;
   List<ProductionCompany> productionCompanies;
   List<ProductionCountry> productionCountries;
   @JsonKey(fromJson: parseDateFromString)
@@ -81,7 +81,7 @@ class Genre {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class ProductionCompany {
   int id;
-  String logoPath;
+  String? logoPath;
   String name;
   String originCountry;
 
