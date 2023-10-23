@@ -2,6 +2,7 @@ import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/entity/movie_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
   final _apiClient = ApiClient();
@@ -11,9 +12,8 @@ class MovieDetailsModel extends ChangeNotifier {
   String _locale = '';
   late DateFormat _dateFormat;
 
-String stringFromDate(DateTime? date) =>
+  String stringFromDate(DateTime? date) =>
       date != null ? _dateFormat.format(date) : '';
-
 
   MovieDetails? get movieDetails => _movieDetails;
 
@@ -30,5 +30,10 @@ String stringFromDate(DateTime? date) =>
   Future<void> loadDetails() async {
     _movieDetails = await _apiClient.movieDetails(movieId, _locale);
     notifyListeners();
+  }
+
+  void openMovieTrailer(BuildContext context, String trailerKey) {
+    Navigator.of(context).pushNamed(MainNavigationRouteNames.movieTrailer,
+        arguments: trailerKey);
   }
 }

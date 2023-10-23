@@ -141,8 +141,8 @@ class _ScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieDetails =
-        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final movieDetails = model?.movieDetails;
     var voteAverage = movieDetails?.voteAverage ?? 0;
     voteAverage = voteAverage * 10;
 
@@ -176,7 +176,7 @@ class _ScoreWidget extends StatelessWidget {
         Container(width: 1, height: 15, color: Colors.grey),
         trailerKey != null
             ? TextButton(
-                onPressed: () {},
+                onPressed: () => model?.openMovieTrailer(context, trailerKey),
                 child: Row(
                   children: [
                     const Icon(Icons.play_arrow),
