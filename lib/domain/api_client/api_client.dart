@@ -60,7 +60,8 @@ class ApiClient {
       throw ApiClientException(ApiClientExceptionType.Network);
     } on ApiClientException {
       rethrow;
-    } catch (_) {
+    } catch (e) {
+      print(e.toString());
       throw ApiClientException(ApiClientExceptionType.Other);
     }
   }
@@ -161,6 +162,7 @@ class ApiClient {
       '/movie/$movieId',
       parser,
       <String, dynamic>{
+        'append_to_response': 'credits',
         'api_key': _apiKey,
         'language': locale,
       },
