@@ -145,6 +145,10 @@ class _ScoreWidget extends StatelessWidget {
         NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
     var voteAverage = movieDetails?.voteAverage ?? 0;
     voteAverage = voteAverage * 10;
+
+    final videos = movieDetails?.videos.results.where(
+        (element) => element.type == 'Trailer' && element.site == 'YouTube');
+    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -170,15 +174,17 @@ class _ScoreWidget extends StatelessWidget {
           ),
         ),
         Container(width: 1, height: 15, color: Colors.grey),
-        TextButton(
-          onPressed: () {},
-          child: Row(
-            children: [
-              const Icon(Icons.play_arrow),
-              const Text('Play Trailer'),
-            ],
-          ),
-        ),
+        trailerKey != null
+            ? TextButton(
+                onPressed: () {},
+                child: Row(
+                  children: [
+                    const Icon(Icons.play_arrow),
+                    const Text('Play Trailer'),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
       ],
     );
   }

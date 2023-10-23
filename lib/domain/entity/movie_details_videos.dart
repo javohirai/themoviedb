@@ -25,7 +25,7 @@ class MovieDetailsVideosResult {
   String site;
   int size;
   String type;
-  String official;
+  bool official;
   DateTime? publishedAt;
   String id;
 

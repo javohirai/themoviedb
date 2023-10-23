@@ -27,7 +27,7 @@ MovieDetailsVideosResult _$MovieDetailsVideosResultFromJson(
       iso639: json['iso_639_1'] as String,
       key: json['key'] as String,
       name: json['name'] as String,
-      official: json['official'] as String,
+      official: json['official'] as bool,
       publishedAt: json['published_at'] == null
           ? null
           : DateTime.parse(json['published_at'] as String),
