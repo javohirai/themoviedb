@@ -1,6 +1,7 @@
 import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/entity/movie_data_provicer.dart';
+import 'package:themoviedb/domain/entity/movie_details_credits.dart';
 import 'package:themoviedb/resources/resources.dart';
 import 'package:themoviedb/ui/widgets/elements/radial_percent_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,10 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           child: _DescriptionWidget(),
         ),
         const SizedBox(height: 30),
-        const _PeopleWidgets(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: const _PeopleWidgets(),
+        ),
       ],
     );
   }
@@ -228,59 +232,73 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const nameStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-    );
-    const jobTilteStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-    );
+    final model =
+        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    if (model == null) return SizedBox.shrink();
+    var crew = model.credits.crew;
+    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
+    final crewChunk = <List<Crew>>[];
+    for (var i = 0; i < crew.length; i += 2) {
+      crewChunk
+          .add(crew.sublist(i, (i + 2 > crew.length) ? crew.length : i + 2));
+    }
+
     return Column(
+      children: crewChunk
+          .map(
+            (crews) => Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: _PeopleRowWidget(
+                crews: crews,
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _PeopleRowWidget extends StatelessWidget {
+  final List<Crew> crews;
+  const _PeopleRowWidget({super.key, required this.crews});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        children: crews
+            .map(
+              (crew) => Expanded(
+                child: _PeopleRowItemWidget(
+                  crew: crew,
+                ),
+              ),
+            )
+            .toList());
+  }
+}
+
+const nameStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
+const jobTilteStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
+
+class _PeopleRowItemWidget extends StatelessWidget {
+  final Crew crew;
+  const _PeopleRowItemWidget({super.key, required this.crew});
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Stefano Sollima', style: nameStyle),
-                const Text('Director', style: jobTilteStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Stefano Sollima', style: nameStyle),
-                const Text('Director', style: jobTilteStyle),
-              ],
-            )
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Stefano Sollima', style: nameStyle),
-                const Text('Director', style: jobTilteStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Stefano Sollima', style: nameStyle),
-                const Text('Director', style: jobTilteStyle),
-              ],
-            )
-          ],
-        ),
+        Text(crew.name, style: nameStyle),
+        Text(crew.job, style: jobTilteStyle),
       ],
     );
   }
