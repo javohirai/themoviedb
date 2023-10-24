@@ -33,11 +33,13 @@ class AuthModel extends ChangeNotifier {
     _isAuthProgress = true;
     notifyListeners();
     String? sessionId;
+    int? acctounId;
     try {
       sessionId = await _apiClient.auth(
         username: login,
         password: password,
       );
+      acctounId = await _apiClient.getAccountId(sessionId);
     } on ApiClientException catch (e) {
       switch (e.type) {
         case ApiClientExceptionType.Network:
@@ -58,12 +60,14 @@ class AuthModel extends ChangeNotifier {
       return;
     }
 
-    if (sessionId == null) {
+    if (sessionId == null || acctounId == null) {
       _errorMessage = 'Неизвестная ошибка, поторите попытку';
       notifyListeners();
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
+    await _sessionDataProvider.setAccountId(acctounId);
+
     unawaited(
       Navigator.of(context)
           .pushReplacementNamed(MainNavigationRouteNames.mainScreen),

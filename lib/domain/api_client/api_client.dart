@@ -108,7 +108,6 @@ class ApiClient {
   }
 
   Future<int> getAccountId(
-    int movieId,
     String sessionId,
   ) async {
     final parser = (dynamic json) {
