@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:themoviedb/domain/entity/popular_movie_response.dart';
 import 'package:themoviedb/domain/entity/movie_details.dart';
 
-enum ApiClientExceptionType { Network, Auth, Other }
+enum ApiClientExceptionType { Network, Auth, Other, SessionExpired }
 
 class ApiClientException implements Exception {
   final ApiClientExceptionType type;
@@ -12,11 +12,24 @@ class ApiClientException implements Exception {
   ApiClientException(this.type);
 }
 
+enum MediaType { Movie, TV }
+
+extension MediaTypeString on MediaType {
+  String asString() {
+    switch (this) {
+      case MediaType.Movie:
+        return 'movie';
+      case MediaType.TV:
+        return 'tv';
+    }
+  }
+}
+
 class ApiClient {
   final _client = HttpClient();
   static const _host = 'https://api.themoviedb.org/3';
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
-  static const _apiKey = '0a2a46b5593a0978cc8e87ba34037430';
+  static const _apiKey = '17abbcf1430dc572182b2a658146188d';
 
   static String imageUrl(String path) => _imageUrl + path;
 
@@ -233,6 +246,31 @@ class ApiClient {
     return result;
   }
 
+  Future<void> makeFavourite({
+    required int accountId,
+    required String sessionId,
+    required MediaType mediaType,
+    required int mediaId,
+    required bool favorite,
+  }) async {
+    final parser = (dynamic json) {};
+    final parameters = <String, dynamic>{
+      'media_type': mediaType.asString(),
+      'media_id': mediaId,
+      'favorite': favorite,
+    };
+    final result = _post(
+      '/account/$accountId/favorite',
+      parameters,
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'session_id': sessionId, 
+      },
+    );
+    return result;
+  }
+
   Future<String> _makeSession({
     required String requestToken,
   }) async {
@@ -259,6 +297,8 @@ class ApiClient {
       final code = status is int ? status : 0;
       if (code == 30) {
         throw ApiClientException(ApiClientExceptionType.Auth);
+      } else if (code == 3) {
+        throw ApiClientException(ApiClientExceptionType.SessionExpired);
       } else {
         throw ApiClientException(ApiClientExceptionType.Other);
       }

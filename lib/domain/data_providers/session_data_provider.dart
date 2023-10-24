@@ -25,9 +25,9 @@ class SessionDataProvider {
   Future<void> setAccountId(int? value) {
     if (value != null) {
       return _secureStorage.write(
-          key: _Keys.sessionId, value: value.toString());
+          key: _Keys.accountId, value: value.toString());
     } else {
-      return _secureStorage.delete(key: _Keys.sessionId);
+      return _secureStorage.delete(key: _Keys.accountId);
     }
   }
 }

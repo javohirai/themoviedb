@@ -96,9 +96,12 @@ class _TopPosterWidget extends StatelessWidget {
           Positioned(
             top: 10,
             right: 10,
-            child: model?.isFavourite == true
-                ? Icon(Icons.favorite)
-                : Icon(Icons.favorite_outline),
+            child: IconButton(
+              onPressed: () => model?.toggleFavorite(),
+              icon: model?.isFavourite == true
+                  ? Icon(Icons.favorite)
+                  : Icon(Icons.favorite_outline),
+            ),
           ),
         ],
       ),

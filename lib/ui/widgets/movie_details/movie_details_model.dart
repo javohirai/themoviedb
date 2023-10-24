@@ -14,6 +14,7 @@ class MovieDetailsModel extends ChangeNotifier {
   String _locale = '';
   bool _isFavourite = false;
   late DateFormat _dateFormat;
+  Future<void>? Function()? onSessionExpired;
 
   String stringFromDate(DateTime? date) =>
       date != null ? _dateFormat.format(date) : '';
@@ -33,10 +34,35 @@ class MovieDetailsModel extends ChangeNotifier {
   Future<void> loadDetails() async {
     _movieDetails = await _apiClient.movieDetails(movieId, _locale);
     final sessionId = await _sessionDataProvider.getSessionId();
-    if (sessionId != null){
+    if (sessionId != null) {
       _isFavourite = await _apiClient.isFavourite(movieId, sessionId);
     }
     notifyListeners();
+  }
+
+  Future<void> toggleFavorite() async {
+    final sessionId = await _sessionDataProvider.getSessionId();
+    final accountId = await _sessionDataProvider.getAccountId();
+
+    if (sessionId == null || accountId == null) return;
+
+    _isFavourite = !_isFavourite;
+    notifyListeners();
+    try {
+      await _apiClient.makeFavourite(
+          accountId: accountId,
+          sessionId: sessionId,
+          mediaType: MediaType.Movie,
+          mediaId: movieId,
+          favorite: _isFavourite);
+    } on ApiClientException catch (e) {
+      switch (e.type) {
+        case ApiClientExceptionType.SessionExpired:
+          await onSessionExpired?.call();
+        default:
+          print('hey');
+      }
+    }
   }
 
   void openMovieTrailer(BuildContext context, String trailerKey) {
