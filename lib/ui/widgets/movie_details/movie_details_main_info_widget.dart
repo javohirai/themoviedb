@@ -1,8 +1,6 @@
 import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
-import 'package:themoviedb/domain/entity/movie_data_provicer.dart';
 import 'package:themoviedb/domain/entity/movie_details_credits.dart';
-import 'package:themoviedb/resources/resources.dart';
 import 'package:themoviedb/ui/widgets/elements/radial_percent_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
@@ -76,8 +74,8 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieDetails =
-        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final movieDetails = model?.movieDetails;
     final backdropPath = movieDetails?.backdropPath;
     final posterPath = movieDetails?.posterPath;
     return AspectRatio(
@@ -94,6 +92,13 @@ class _TopPosterWidget extends StatelessWidget {
             child: posterPath != null
                 ? Image.network(ApiClient.imageUrl(posterPath))
                 : SizedBox.shrink(),
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: model?.isFavourite == true
+                ? Icon(Icons.favorite)
+                : Icon(Icons.favorite_outline),
           ),
         ],
       ),
