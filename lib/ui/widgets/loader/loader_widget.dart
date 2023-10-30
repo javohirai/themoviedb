@@ -14,11 +14,4 @@ class LoaderWidget extends StatelessWidget {
     );
   }
 
-  static Widget create() {
-    return Provider(
-      create: (context) => LoaderViewModel(context),
-      lazy: false,
-      child: const LoaderWidget(),
-    );
-  }
 }
