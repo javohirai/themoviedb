@@ -1,14 +1,5 @@
-import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
 import 'package:themoviedb/domain/factories/screen_factory.dart';
-import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
-import 'package:themoviedb/ui/widgets/auth/auth_widget.dart';
-import 'package:themoviedb/ui/widgets/loader/loader_widget.dart';
-import 'package:themoviedb/ui/widgets/main_screen/main_screen_model.dart';
-import 'package:themoviedb/ui/widgets/main_screen/main_screen_widget.dart';
-import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
-import 'package:themoviedb/ui/widgets/movie_details/movie_details_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:themoviedb/ui/widgets/movie_trailer/movie_trailer.dart';
 
 abstract class MainNavigationRouteNames {
   static const loader = '/';
@@ -26,15 +17,9 @@ class MainNavigation {
       : MainNavigationRouteNames.auth;
 
   final routes = <String, Widget Function(BuildContext)>{
-    MainNavigationRouteNames.loader: (context) => _screenFactory.makeLoader(),
-    MainNavigationRouteNames.auth: (context) => NotifierProvider(
-          create: () => AuthModel(),
-          child: const AuthWidget(),
-        ),
-    MainNavigationRouteNames.mainScreen: (context) => NotifierProvider(
-          create: () => MainScreenModel(),
-          child: const MainScreenWidget(),
-        ),
+    MainNavigationRouteNames.loader: (_) => _screenFactory.makeLoader(),
+    MainNavigationRouteNames.auth: (_) => _screenFactory.makeAuth(),
+    MainNavigationRouteNames.mainScreen: (_) => _screenFactory.makeMainScreen(),
   };
   Route<Object> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -42,16 +27,13 @@ class MainNavigation {
         final arguments = settings.arguments;
         final movieId = arguments is int ? arguments : 0;
         return MaterialPageRoute(
-          builder: (context) => NotifierProvider(
-            create: () => MovieDetailsModel(movieId),
-            child: const MovieDetailsWidget(),
-          ),
+          builder: (_) => _screenFactory.makeMovieDetails(movieId),
         );
       case MainNavigationRouteNames.movieTrailer:
         final arguments = settings.arguments;
         final trailerKey = arguments is String ? arguments : '';
         return MaterialPageRoute(
-          builder: (context) => MovieTrailerWidget(trailerKey: trailerKey),
+          builder: (_) => _screenFactory.makeMovieTrailer(trailerKey),
         );
       default:
         const widget = Text('Navigation error!!!');
