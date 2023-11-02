@@ -1,16 +1,11 @@
-import 'package:provider/provider.dart';
 import 'package:themoviedb/ui/theme/app_button_style.dart';
 import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class AuthWidget extends StatefulWidget {
+class AuthWidget extends StatelessWidget {
   const AuthWidget({Key? key}) : super(key: key);
 
-  @override
-  _AuthWidgetState createState() => _AuthWidgetState();
-}
-
-class _AuthWidgetState extends State<AuthWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,8 +13,8 @@ class _AuthWidgetState extends State<AuthWidget> {
         title: const Text('Login to your account'),
       ),
       body: ListView(
-        children: [
-          const _HeaderWidget(),
+        children: const [
+          _HeaderWidget(),
         ],
       ),
     );
@@ -75,7 +70,7 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<AuthModel>();
+    final model = context.read<AuthViewModel>();
     const textStyle = TextStyle(
       fontSize: 16,
       color: Color(0xFF212529),
@@ -98,7 +93,7 @@ class _FormWidget extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         TextField(
-          controller: model?.loginTextController,
+          controller: model.loginTextController,
           decoration: textFieldDecorator,
         ),
         const SizedBox(height: 20),
@@ -108,7 +103,7 @@ class _FormWidget extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         TextField(
-          controller: model?.passwordTextController,
+          controller: model.passwordTextController,
           decoration: textFieldDecorator,
           obscureText: true,
         ),
@@ -134,7 +129,7 @@ class _AuthButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<AuthModel>();
+    final model = context.watch<AuthViewModel>();
     const color = Color(0xFF01B4E4);
     final onPressed = model.canStartAuth ? () => model.auth(context) : null;
     final child = model.isAuthProgress
@@ -169,7 +164,7 @@ class _ErrorMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = context.select((AuthModel m) => m.errorMessage);
+    final errorMessage = context.select((AuthViewModel m) => m.errorMessage);
     if (errorMessage == null) return const SizedBox.shrink();
 
     return Padding(

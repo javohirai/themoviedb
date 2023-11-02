@@ -1,23 +1,19 @@
-import 'package:themoviedb/domain/factories/screen_factory.dart';
+import 'package:themoviedb/domain/factoryes/scren_factory.dart';
 import 'package:flutter/material.dart';
 
 abstract class MainNavigationRouteNames {
-  static const loader = '/';
+  static const loaderWidget = '/';
   static const auth = '/auth';
   static const mainScreen = '/main_screen';
   static const movieDetails = '/main_screen/movie_details';
-  static const movieTrailer = '/main_screen/movie_details/trailer';
+  static const movieTrailerWidget = '/main_screen/movie_details/trailer';
 }
 
 class MainNavigation {
   static final _screenFactory = ScreenFactory();
 
-  String initialRoute(bool isAuth) => isAuth
-      ? MainNavigationRouteNames.mainScreen
-      : MainNavigationRouteNames.auth;
-
   final routes = <String, Widget Function(BuildContext)>{
-    MainNavigationRouteNames.loader: (_) => _screenFactory.makeLoader(),
+    MainNavigationRouteNames.loaderWidget: (_) => _screenFactory.makeLoader(),
     MainNavigationRouteNames.auth: (_) => _screenFactory.makeAuth(),
     MainNavigationRouteNames.mainScreen: (_) => _screenFactory.makeMainScreen(),
   };
@@ -29,20 +25,22 @@ class MainNavigation {
         return MaterialPageRoute(
           builder: (_) => _screenFactory.makeMovieDetails(movieId),
         );
-      case MainNavigationRouteNames.movieTrailer:
+      case MainNavigationRouteNames.movieTrailerWidget:
         final arguments = settings.arguments;
-        final trailerKey = arguments is String ? arguments : '';
+        final youtubeKey = arguments is String ? arguments : '';
         return MaterialPageRoute(
-          builder: (_) => _screenFactory.makeMovieTrailer(trailerKey),
+          builder: (_) => _screenFactory.makeMovieTrailer(youtubeKey),
         );
       default:
         const widget = Text('Navigation error!!!');
-        return MaterialPageRoute(builder: (context) => widget);
+        return MaterialPageRoute(builder: (_) => widget);
     }
   }
 
   static void resetNavigation(BuildContext context) {
     Navigator.of(context).pushNamedAndRemoveUntil(
-        MainNavigationRouteNames.mainScreen, (route) => false);
+      MainNavigationRouteNames.loaderWidget,
+      (route) => false,
+    );
   }
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:themoviedb/ui/widgets/loader/loader_view_model.dart';
 
 class LoaderWidget extends StatelessWidget {
-  const LoaderWidget({super.key});
+  const LoaderWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,5 +11,4 @@ class LoaderWidget extends StatelessWidget {
       ),
     );
   }
-
 }

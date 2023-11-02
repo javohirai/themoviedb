@@ -1,7 +1,7 @@
 import 'package:themoviedb/domain/entity/movie_date_parser.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:themoviedb/domain/entity/movie_details_credits.dart';
 import 'package:themoviedb/domain/entity/movie_details_videos.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'movie_details.g.dart';
 
@@ -35,34 +35,35 @@ class MovieDetails {
   final int voteCount;
   final MovieDetailsCredits credits;
   final MovieDetailsVideos videos;
-  MovieDetails(
-      {required this.adult,
-      required this.backdropPath,
-      required this.belongsToCollection,
-      required this.budget,
-      required this.genres,
-      required this.homepage,
-      required this.id,
-      required this.imdbId,
-      required this.originalLanguage,
-      required this.originalTitle,
-      required this.overview,
-      required this.popularity,
-      required this.posterPath,
-      required this.productionCompanies,
-      required this.productionCountries,
-      required this.releaseDate,
-      required this.revenue,
-      required this.runtime,
-      required this.spokenLanguages,
-      required this.status,
-      required this.tagline,
-      required this.title,
-      required this.video,
-      required this.voteAverage,
-      required this.voteCount,
-      required this.credits,
-      required this.videos});
+  MovieDetails({
+    required this.adult,
+    required this.backdropPath,
+    required this.belongsToCollection,
+    required this.budget,
+    required this.genres,
+    required this.homepage,
+    required this.id,
+    required this.imdbId,
+    required this.originalLanguage,
+    required this.originalTitle,
+    required this.overview,
+    required this.popularity,
+    required this.posterPath,
+    required this.productionCompanies,
+    required this.productionCountries,
+    required this.releaseDate,
+    required this.revenue,
+    required this.runtime,
+    required this.spokenLanguages,
+    required this.status,
+    required this.tagline,
+    required this.title,
+    required this.video,
+    required this.voteAverage,
+    required this.voteCount,
+    required this.credits,
+    required this.videos,
+  });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) =>
       _$MovieDetailsFromJson(json);

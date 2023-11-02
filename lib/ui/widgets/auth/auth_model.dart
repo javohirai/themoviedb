@@ -1,9 +1,9 @@
-import 'package:themoviedb/domain/service/auth_service.dart';
+import 'package:themoviedb/domain/api_client/api_client_exception.dart';
+import 'package:themoviedb/domain/services/auth_service.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:themoviedb/domain/api_client/api_client.dart';
 
-class AuthModel extends ChangeNotifier {
+class AuthViewModel extends ChangeNotifier {
   final _authService = AuthService();
 
   final loginTextController = TextEditingController();
@@ -16,46 +16,52 @@ class AuthModel extends ChangeNotifier {
   bool get canStartAuth => !_isAuthProgress;
   bool get isAuthProgress => _isAuthProgress;
 
-  Future<void> auth(BuildContext context) async {
-    final login = loginTextController.text;
-    final password = passwordTextController.text;
+  bool _isValid(String login, String password) =>
+      login.isNotEmpty && password.isNotEmpty;
 
-    if (login.isEmpty || password.isEmpty) {
-      _errorMessage = 'Заполните логин и пароль';
-      notifyListeners();
-      return;
-    }
-    _errorMessage = null;
-    _isAuthProgress = true;
-    notifyListeners();
-
+  Future<String?> _login(String login, String password) async {
     try {
       await _authService.login(login, password);
     } on ApiClientException catch (e) {
       switch (e.type) {
-        case ApiClientExceptionType.Network:
-          _errorMessage =
-              'Сервер не доступен. Проверте подключение к интернету';
-          break;
-        case ApiClientExceptionType.Auth:
-          _errorMessage = 'Неправильный логин пароль!';
-          break;
-        case ApiClientExceptionType.Other:
-          _errorMessage = 'Произошла ошибка. Попробуйте еще раз';
-          break;
-        case ApiClientExceptionType.SessionExpired:
-          _errorMessage = 'Сессия закончилось';
-          break;
+        case ApiClientExceptionType.network:
+          return 'Сервер не доступен. Проверте подключение к интернету';
+        case ApiClientExceptionType.auth:
+          return 'Неправильный логин пароль!';
+        case ApiClientExceptionType.sessionExpired:
+        case ApiClientExceptionType.other:
+          return 'Произошла ошибка. Попробуйте еще раз';
       }
     } catch (e) {
-      _errorMessage = 'Неизвестная ошибка, поторите попытку';
+      return 'Неизвестная ошибка, поторите попытку';
     }
-    _isAuthProgress = false;
-    if (_errorMessage != null) {
-      notifyListeners();
+    return null;
+  }
+
+  Future<void> auth(BuildContext context) async {
+    final login = loginTextController.text;
+    final password = passwordTextController.text;
+
+    if (!_isValid(login, password)) {
+      _updateState('Заполните логин и пароль', false);
       return;
     }
+    _updateState(null, true);
 
-    MainNavigation.resetNavigation(context);
+    _errorMessage = await _login(login, password);
+    if (_errorMessage == null) {
+      MainNavigation.resetNavigation(context);
+    } else {
+      _updateState(_errorMessage, false);
+    }
+  }
+
+  void _updateState(String? errorMessage, bool isAuthProgress) {
+    if (_errorMessage == errorMessage && _isAuthProgress == isAuthProgress) {
+      return;
+    }
+    _errorMessage = errorMessage;
+    _isAuthProgress = isAuthProgress;
+    notifyListeners();
   }
 }

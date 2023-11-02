@@ -1,8 +1,7 @@
-import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
-import 'package:themoviedb/domain/api_client/api_client.dart';
-import 'package:themoviedb/resources/resources.dart';
-import 'package:flutter/material.dart';
+import 'package:themoviedb/domain/api_client/image_downloader.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
   const MovieDetailsMainScreenCastWidget({Key? key}) : super(key: key);
@@ -24,10 +23,10 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 250,
             child: Scrollbar(
-              child: const _ActorWidget(),
+              child: _ActorListWidget(),
             ),
           ),
           Padding(
@@ -43,40 +42,40 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
   }
 }
 
-class _ActorWidget extends StatelessWidget {
-  const _ActorWidget({
-    super.key,
-  });
+class _ActorListWidget extends StatelessWidget {
+  const _ActorListWidget({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
-    final casts = model?.movieDetails?.credits.cast;
-    if (casts == null || casts.isEmpty) return SizedBox.shrink();
-
+    var data =
+        context.select((MovieDetailsModel model) => model.data.actorsData);
+    if (data.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
-      itemCount: casts.length,
+      itemCount: data.length,
       itemExtent: 120,
       scrollDirection: Axis.horizontal,
       itemBuilder: (BuildContext context, int index) {
-        return _ActorItemWidget(actorIndex: index);
+        return _ActorListItemWidget(actorIndex: index);
       },
     );
   }
 }
 
-class _ActorItemWidget extends StatelessWidget {
+class _ActorListItemWidget extends StatelessWidget {
   final int actorIndex;
-  const _ActorItemWidget({
-    super.key,
+  const _ActorListItemWidget({
+    Key? key,
     required this.actorIndex,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<MovieDetailsModel>(context);
-    final cast = model!.movieDetails!.credits.cast[actorIndex];
-    final backdropPath = cast.profilePath;
+    final model = context.read<MovieDetailsModel>();
+    final actor = model.data.actorsData[actorIndex];
+    final profilePath = actor.profilePath;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DecoratedBox(
@@ -97,9 +96,13 @@ class _ActorItemWidget extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           child: Column(
             children: [
-              backdropPath != null
-                  ? Image.network(ApiClient.imageUrl(backdropPath))
-                  : SizedBox.shrink(),
+              if (profilePath != null)
+                Image.network(
+                  ImageDownloader.imageUrl(profilePath),
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.fitWidth,
+                ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -107,15 +110,14 @@ class _ActorItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        cast.name,
+                        actor.name,
                         maxLines: 1,
                       ),
                       const SizedBox(height: 7),
                       Text(
-                        cast.character,
+                        actor.character,
                         maxLines: 2,
                       ),
-                      const SizedBox(height: 7),
                     ],
                   ),
                 ),

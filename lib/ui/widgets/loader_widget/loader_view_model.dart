@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
-import 'package:themoviedb/domain/service/auth_service.dart';
+import 'package:themoviedb/domain/services/auth_service.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
+import 'package:flutter/material.dart';
 
 class LoaderViewModel {
   final BuildContext context;
